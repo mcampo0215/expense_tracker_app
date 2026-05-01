@@ -5,6 +5,7 @@ import 'package:expense_tracker_app/widgets/expenses_list/expenses_list.dart';
 import 'package:expense_tracker_app/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
 
+
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
 
@@ -17,10 +18,10 @@ class _ExpensesState extends State<Expenses> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewExpense(
-        onAddExpense: _addExpense)
+      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
     );
   }
+
   void _addExpense(Expense expense) {
     setState(() {
       _registeredExpenses.add(expense);
@@ -36,14 +37,15 @@ class _ExpensesState extends State<Expenses> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: Duration(seconds: 3),
-        content: Text('Expense Deleted!'),
+        content: Text("Expense Deleted!"),
         action: SnackBarAction(
-          label: 'Undo', 
+          label: "Undo",
           onPressed: () {
             setState(() {
               _registeredExpenses.insert(expenseIndex, expense);
             });
-        }),
+          },
+        ),
       ),
     );
   }
@@ -61,42 +63,51 @@ class _ExpensesState extends State<Expenses> {
       date: DateTime.now(),
       category: Category.travel,
     ),
+
     Expense(
-      title: "Movie Ticket",
-      amount: 18.00,
+      title: "Movie Night",
+      amount: 12.50,
       date: DateTime.now(),
       category: Category.leisure,
     ),
   ];
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+
     Widget mainContent = const Center(
-      child: Text('No Expense. Click + to add one!'),
+      child: Text('No expenses found. C;lick the + button to add some!'),
     );
     if (_registeredExpenses.isNotEmpty) {
       mainContent = ExpensesList(
-        expenses: _registeredExpenses,
         onRemoveExpense: _removeExpense,
+        expenses: _registeredExpenses,
       );
     }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense Tracker'),
+
         actions: [
           IconButton(
-            icon: const Icon(Icons.add), 
+            icon: const Icon(Icons.add),
             onPressed: _openAddExpenseOverlay,
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-            child: mainContent
-          ),
-        ],
-      ),
+      body: width <= 600
+          ? Column(
+              children: [
+                Chart(expenses: _registeredExpenses),
+                Expanded(child: mainContent),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: Chart(expenses: _registeredExpenses)),
+                Expanded(child: mainContent),
+              ],
+            ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:expense_tracker_app/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -24,7 +25,7 @@ class _NewExpenseState extends State<NewExpense> {
     final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
      if (_titleController.text.trim().isEmpty || amountIsInvalid || _selectedDate == null) {
-      showDialog(context: context, builder: (ctx) => AlertDialog(
+      showCupertinoDialog(context: context, builder: (ctx) => AlertDialog(
         title: const Text('Invalid Input'),
         content: const Text('Please make sure to have a valid title, amount, and date!'),
         actions: [
